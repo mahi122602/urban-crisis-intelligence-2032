@@ -1,0 +1,12 @@
+feature,importance
+crowd_density_score,0.16801157220713697
+temperature,0.16166881345309828
+hospital_distance_km,0.13397065863795848
+transport_delay_score,0.12142335621330055
+social_media_risk_score,0.1071050999488933
+road_congestion_score,0.0887859472006341
+police_station_distance_km,0.04728944618872571
+rainfall,0.04702382356402713
+humidity,0.046513154565152676
+expected_attendance,0.03954171726682634
+accessibility_score,0.03866641075424651

@@ -1,0 +1,35 @@
+body {
+    background-color: #0E1117;
+    color: white;
+}
+
+.stApp {
+    background-color: #0E1117;
+}
+
+h1, h2, h3, h4 {
+    color: #00E5FF;
+}
+
+[data-testid="metric-container"] {
+    background-color: #1E1E1E;
+    border: 1px solid #00E5FF;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.stAlert {
+    border-radius: 10px;
+}
+
+.css-1d391kg {
+    background-color: #111827;
+}
+
+section[data-testid="stSidebar"] {
+    background-color: #111827;
+}
+
+.stDataFrame {
+    background-color: #1E1E1E;
+}
