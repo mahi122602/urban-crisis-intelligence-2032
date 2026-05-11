@@ -18,11 +18,13 @@ st.set_page_config(
 
 css_file = os.path.join("dashboard", "assets", "style.css")
 
-with open(css_file) as f:
-    st.markdown(
-        f"<style>{f.read()}</style>",
-        unsafe_allow_html=True
-    )
+if os.path.exists(css_file):
+    with open(css_file) as f:
+        st.markdown(
+            f"<style>{f.read()}</style>",
+            unsafe_allow_html=True
+        )
+
 # -----------------------------
 # LIVE WEATHER FUNCTION
 # -----------------------------
@@ -51,6 +53,40 @@ def get_brisbane_weather():
     except Exception:
         return None
 
+# -----------------------------
+# LIVE TRAFFIC FUNCTION
+# -----------------------------
+
+def get_live_traffic_incidents():
+    url = (
+        "https://queensland.opendatasoft.com/api/explore/v2.1/catalog/"
+        "datasets/queensland-traffic-incidents/records?limit=100"
+    )
+
+    try:
+        response = requests.get(url, timeout=10)
+        data = response.json()
+
+        brisbane_incidents = []
+
+        for record in data.get("results", []):
+            lat = None
+            lon = None
+
+            if "geo_point_2d" in record and record["geo_point_2d"]:
+                geo = record["geo_point_2d"]
+                lat = geo.get("lat")
+                lon = geo.get("lon")
+
+            if lat is not None and lon is not None:
+                # Brisbane approximate bounding box
+                if -27.75 <= lat <= -27.20 and 152.70 <= lon <= 153.35:
+                    brisbane_incidents.append(record)
+
+        return brisbane_incidents
+
+    except Exception:
+        return []
 
 # -----------------------------
 # LOAD DATA AND MODEL
@@ -80,14 +116,26 @@ venue_coordinates = {
 # HEADER
 # -----------------------------
 
-st.title("AI-Powered Urban Crisis Intelligence System")
-st.subheader("Brisbane 2032 Olympic & Paralympic Command Centre")
+st.markdown(
+    """
+    <div class="hero-section">
+        <h1>AI-Powered Urban Crisis Intelligence System</h1>
+        <h3>Brisbane 2032 Olympic & Paralympic Smart City Command Centre</h3>
+        <p>
+        A hybrid real-time intelligence platform for crisis prediction, 
+        live weather monitoring, traffic incident awareness, GIS risk mapping, 
+        and AI-driven operational decision support.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
     This dashboard simulates and predicts city-level crisis risks for Brisbane 2032,
-    including crowd pressure, transport delay, climate risk, accessibility pressure,
-    and emergency response needs.
+    including crowd pressure, transport delay, climate risk, traffic incidents,
+    accessibility pressure, and emergency response needs.
     """
 )
 
@@ -146,6 +194,61 @@ if weather is not None:
 else:
     st.warning("Live weather data is currently unavailable.")
 
+# -----------------------------
+# LIVE TRAFFIC INCIDENT INTELLIGENCE
+# -----------------------------
+
+st.markdown("## Live Traffic Incident Intelligence")
+
+traffic_incidents = get_live_traffic_incidents()
+
+t1, t2, t3 = st.columns(3)
+
+t1.metric("Live Traffic Records", len(traffic_incidents))
+
+incident_types = []
+
+for incident in traffic_incidents:
+    possible_type = (
+        incident.get("event_type")
+        or incident.get("eventtype")
+        or incident.get("type")
+        or incident.get("incident_type")
+        or incident.get("incidenttype")
+        or incident.get("category")
+        or incident.get("subtype")
+        or incident.get("impact")
+        or "Unknown"
+    )
+
+    incident_types.append(str(possible_type))
+
+unique_incident_types = len(set(incident_types))
+
+t2.metric("Incident Types", unique_incident_types)
+
+# Brisbane-specific traffic risk logic
+if len(traffic_incidents) > 15:
+    traffic_risk_status = "High"
+elif len(traffic_incidents) > 5:
+    traffic_risk_status = "Medium"
+else:
+    traffic_risk_status = "Low"
+
+t3.metric("Traffic Risk Status", traffic_risk_status)
+
+if traffic_risk_status == "High":
+    st.error(
+        f"Traffic Alert: {len(traffic_incidents)} live Brisbane-area traffic incidents detected."
+    )
+elif traffic_risk_status == "Medium":
+    st.warning(
+        f"Traffic Warning: {len(traffic_incidents)} moderate Brisbane-area traffic incidents detected."
+    )
+else:
+    st.success(
+        f"Traffic Status: {len(traffic_incidents)} Brisbane-area traffic incidents detected. No major pressure."
+    )
 # -----------------------------
 # EXECUTIVE METRICS
 # -----------------------------
@@ -244,6 +347,7 @@ brisbane_map = folium.Map(
     zoom_start=11
 )
 
+# Venue risk markers
 for venue, coords in venue_coordinates.items():
     venue_data = filtered_df[filtered_df["venue_name"] == venue]
 
@@ -280,6 +384,47 @@ for venue, coords in venue_coordinates.items():
             fill_opacity=0.75
         ).add_to(brisbane_map)
 
+# Live traffic incident markers
+for incident in traffic_incidents:
+    lat = None
+    lon = None
+
+    if "geo_point_2d" in incident and incident["geo_point_2d"]:
+        geo = incident["geo_point_2d"]
+        lat = geo.get("lat")
+        lon = geo.get("lon")
+
+    elif "geo_shape" in incident and incident["geo_shape"]:
+        geo_shape = incident["geo_shape"]
+        if isinstance(geo_shape, dict) and "geometry" in geo_shape:
+            coordinates = geo_shape["geometry"].get("coordinates", [])
+            if coordinates and isinstance(coordinates[0], list):
+                lon = coordinates[0][0]
+                lat = coordinates[0][1]
+
+    elif "latitude" in incident and "longitude" in incident:
+        lat = incident.get("latitude")
+        lon = incident.get("longitude")
+
+    if lat is not None and lon is not None:
+        description = (
+            incident.get("description")
+            or incident.get("title")
+            or incident.get("event_type")
+            or incident.get("category")
+            or "Traffic incident"
+        )
+
+        folium.Marker(
+            location=[lat, lon],
+            popup=f"""
+            <b>Live Traffic Incident</b><br>
+            {description}
+            """,
+            tooltip="Traffic Incident",
+            icon=folium.Icon(color="blue", icon="info-sign")
+        ).add_to(brisbane_map)
+
 st_folium(
     brisbane_map,
     width=1200,
@@ -294,72 +439,63 @@ st.markdown("### Detailed Scenario Data")
 st.dataframe(filtered_df, use_container_width=True)
 
 # -----------------------------
-# AI PREDICTION SECTION
-# -----------------------------
-
-st.markdown("---")
-# -----------------------------
 # LIVE ALERT ENGINE
 # -----------------------------
 
+st.markdown("---")
 st.markdown("## Real-Time Crisis Alerts")
 
 alerts = []
 
-# Heat alerts
 if weather is not None:
     if weather["temperature"] >= 35:
         alerts.append("Extreme Heat Alert: Dangerous outdoor conditions detected.")
-
     elif weather["temperature"] >= 30:
         alerts.append("Heat Warning: Elevated temperature may affect crowd movement.")
 
-# Crowd alerts
-high_crowd = filtered_df[
-    filtered_df["crowd_density_score"] >= 80
-]
+if traffic_risk_status == "High":
+    alerts.append("Traffic Incident Alert: High live traffic disruption pressure detected.")
+elif traffic_risk_status == "Medium":
+    alerts.append("Traffic Warning: Moderate live traffic incident pressure detected.")
+
+high_crowd = filtered_df[filtered_df["crowd_density_score"] >= 80]
 
 if len(high_crowd) > 0:
     alerts.append(
         f"Crowd Congestion Risk: {len(high_crowd)} high-density scenarios detected."
     )
 
-# Transport alerts
-high_transport = filtered_df[
-    filtered_df["transport_delay_score"] >= 75
-]
+high_transport = filtered_df[filtered_df["transport_delay_score"] >= 75]
 
 if len(high_transport) > 0:
     alerts.append(
         f"Transport Delay Risk: {len(high_transport)} scenarios showing severe delays."
     )
 
-# Critical crisis alerts
-critical_cases = filtered_df[
-    filtered_df["risk_level"] == "Critical"
-]
+critical_cases = filtered_df[filtered_df["risk_level"] == "Critical"]
 
 if len(critical_cases) > 50:
     alerts.append(
         f"Critical Risk Escalation: {len(critical_cases)} critical crisis scenarios identified."
     )
 
-# Accessibility alerts
-low_accessibility = filtered_df[
-    filtered_df["accessibility_score"] <= 50
-]
+low_accessibility = filtered_df[filtered_df["accessibility_score"] <= 50]
 
 if len(low_accessibility) > 0:
     alerts.append(
         f"Accessibility Warning: {len(low_accessibility)} scenarios have poor accessibility conditions."
     )
 
-# Display alerts
 if alerts:
     for alert in alerts:
         st.error(alert)
 else:
     st.success("No major operational alerts detected.")
+
+# -----------------------------
+# AI PREDICTION SECTION
+# -----------------------------
+
 st.markdown("## AI Crisis Prediction Engine")
 
 col1, col2 = st.columns(2)
