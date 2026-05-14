@@ -9,3 +9,4 @@ scikit-learn
 matplotlib
 xgboost
 numpy
+streamlit-js-eval

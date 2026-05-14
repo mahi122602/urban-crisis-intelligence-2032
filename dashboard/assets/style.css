@@ -1,107 +1,275 @@
-/* Main app background */
+/* -----------------------------
+   GLOBAL APP STYLE
+----------------------------- */
+
 .stApp {
-    background: linear-gradient(135deg, #070B14 0%, #0E1117 45%, #111827 100%);
-    color: #FAFAFA;
+    background:
+        radial-gradient(circle at top left, rgba(0, 229, 255, 0.12), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.16), transparent 35%),
+        linear-gradient(135deg, #050814 0%, #0B1020 45%, #111827 100%);
+    color: #F8FAFC;
 }
 
-/* Global text */
 html, body, [class*="css"] {
-    color: #FAFAFA;
     font-family: "Inter", "Segoe UI", sans-serif;
+    color: #F8FAFC;
 }
 
-/* Headings */
+/* -----------------------------
+   HEADINGS
+----------------------------- */
+
 h1 {
-    color: #00E5FF !important;
-    font-size: 3rem !important;
-    font-weight: 800 !important;
-    letter-spacing: -1px;
-    animation: fadeSlideDown 0.9s ease-in-out;
+    color: #22D3EE !important;
+    font-size: 3.2rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -1.4px;
+    line-height: 1.1;
+    animation: fadeSlideDown 0.8s ease-in-out;
 }
 
-h2, h3 {
+h2 {
+    color: #E0F2FE !important;
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    margin-top: 1.5rem;
+}
+
+h3 {
     color: #7DD3FC !important;
     font-weight: 700 !important;
 }
 
-/* Sidebar */
+/* -----------------------------
+   SIDEBAR
+----------------------------- */
+
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0F172A 0%, #111827 100%);
-    border-right: 1px solid rgba(0, 229, 255, 0.25);
+    background: linear-gradient(180deg, #07111F 0%, #0F172A 100%);
+    border-right: 1px solid rgba(34, 211, 238, 0.22);
 }
 
-/* Metric cards */
-[data-testid="metric-container"] {
-    background: rgba(30, 41, 59, 0.75);
-    border: 1px solid rgba(0, 229, 255, 0.35);
-    padding: 18px;
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0, 229, 255, 0.08);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease-in-out;
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] label {
+    color: #E0F2FE !important;
+}
+
+/* -----------------------------
+   PRODUCT HEADER
+----------------------------- */
+
+.hero-section,
+.product-header {
+    background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.14), rgba(37, 99, 235, 0.12)),
+        rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(34, 211, 238, 0.32);
+    border-radius: 28px;
+    padding: 36px;
+    margin-bottom: 30px;
+    box-shadow:
+        0 18px 55px rgba(0, 229, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
     animation: fadeUp 0.8s ease-in-out;
 }
 
-[data-testid="metric-container"]:hover {
-    transform: translateY(-4px) scale(1.01);
-    border-color: rgba(0, 229, 255, 0.9);
-    box-shadow: 0 12px 35px rgba(0, 229, 255, 0.22);
+.hero-section p,
+.product-header p {
+    font-size: 1.06rem;
+    color: #CBD5E1;
+    max-width: 980px;
+    line-height: 1.75;
 }
 
-/* Charts and dataframe containers */
-[data-testid="stVerticalBlock"] {
+.product-badge {
+    display: inline-block;
+    padding: 7px 15px;
+    border-radius: 999px;
+    background: rgba(34, 211, 238, 0.14);
+    border: 1px solid rgba(34, 211, 238, 0.5);
+    color: #67E8F9;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+/* -----------------------------
+   STATUS CARDS
+----------------------------- */
+
+.status-card {
+    background: rgba(15, 23, 42, 0.82);
+    border: 1px solid rgba(34, 211, 238, 0.28);
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 10px 32px rgba(0, 229, 255, 0.08);
+    transition: all 0.25s ease-in-out;
+}
+
+.status-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(34, 211, 238, 0.85);
+    box-shadow: 0 16px 38px rgba(0, 229, 255, 0.18);
+}
+
+/* -----------------------------
+   METRIC CARDS
+----------------------------- */
+
+[data-testid="metric-container"] {
+    background:
+        linear-gradient(145deg, rgba(30, 41, 59, 0.88), rgba(15, 23, 42, 0.9));
+    border: 1px solid rgba(34, 211, 238, 0.32);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow:
+        0 10px 32px rgba(0, 229, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    transition: all 0.28s ease-in-out;
     animation: fadeUp 0.7s ease-in-out;
 }
 
-/* Buttons */
+[data-testid="metric-container"]:hover {
+    transform: translateY(-5px) scale(1.01);
+    border-color: rgba(34, 211, 238, 0.9);
+    box-shadow:
+        0 16px 42px rgba(0, 229, 255, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+[data-testid="metric-container"] label {
+    color: #CBD5E1 !important;
+    font-weight: 600 !important;
+}
+
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: #F8FAFC !important;
+    font-weight: 800 !important;
+}
+
+/* -----------------------------
+   CHARTS / BLOCKS
+----------------------------- */
+
+[data-testid="stVerticalBlock"] {
+    animation: fadeUp 0.65s ease-in-out;
+}
+
+[data-testid="stPlotlyChart"] {
+    background: rgba(15, 23, 42, 0.56);
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+/* -----------------------------
+   BUTTONS
+----------------------------- */
+
 .stButton > button {
-    background: linear-gradient(90deg, #00E5FF, #2563EB);
+    background: linear-gradient(90deg, #06B6D4, #2563EB);
     color: white;
     border: none;
-    border-radius: 14px;
-    padding: 0.7rem 1.4rem;
-    font-weight: 700;
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+    border-radius: 15px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    box-shadow: 0 10px 28px rgba(37, 99, 235, 0.35);
     transition: all 0.25s ease-in-out;
 }
 
 .stButton > button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0, 229, 255, 0.45);
+    box-shadow: 0 14px 36px rgba(34, 211, 238, 0.45);
+    filter: brightness(1.08);
 }
 
-/* Alerts */
+/* -----------------------------
+   ALERTS
+----------------------------- */
+
 .stAlert {
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    animation: pulseGlow 1.8s ease-in-out;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    animation: pulseGlow 1.7s ease-in-out;
 }
 
-/* Dataframe */
-.stDataFrame {
-    border-radius: 16px;
-    overflow: hidden;
-}
+/* -----------------------------
+   INPUTS / SELECTS / SLIDERS
+----------------------------- */
 
-/* Select boxes and sliders */
 div[data-baseweb="select"] {
-    border-radius: 12px;
+    border-radius: 14px;
 }
 
 .stSlider {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-/* Horizontal divider */
+.stCheckbox {
+    padding: 8px 0;
+}
+
+/* -----------------------------
+   DATAFRAME
+----------------------------- */
+
+.stDataFrame {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+/* -----------------------------
+   MAP
+----------------------------- */
+
+iframe {
+    border-radius: 20px !important;
+    border: 1px solid rgba(34, 211, 238, 0.28) !important;
+    box-shadow: 0 14px 40px rgba(0, 229, 255, 0.1);
+}
+
+/* -----------------------------
+   DIVIDERS
+----------------------------- */
+
 hr {
     border: none;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #00E5FF, transparent);
-    margin: 2rem 0;
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.75), transparent);
+    margin: 2.2rem 0;
 }
 
-/* Animations */
+/* -----------------------------
+   FOOTER
+----------------------------- */
+
+.fixed-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(5, 8, 20, 0.95);
+    border-top: 1px solid rgba(34, 211, 238, 0.25);
+    color: #94A3B8;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.85rem;
+    z-index: 9999;
+}
+
+/* -----------------------------
+   ANIMATIONS
+----------------------------- */
+
 @keyframes fadeUp {
     from {
         opacity: 0;
@@ -126,29 +294,12 @@ hr {
 
 @keyframes pulseGlow {
     0% {
-        box-shadow: 0 0 0 rgba(0, 229, 255, 0);
+        box-shadow: 0 0 0 rgba(34, 211, 238, 0);
     }
     50% {
-        box-shadow: 0 0 22px rgba(0, 229, 255, 0.18);
+        box-shadow: 0 0 22px rgba(34, 211, 238, 0.16);
     }
     100% {
-        box-shadow: 0 0 0 rgba(0, 229, 255, 0);
+        box-shadow: 0 0 0 rgba(34, 211, 238, 0);
     }
-}
-
-.hero-section {
-    background: linear-gradient(135deg, rgba(0,229,255,0.14), rgba(37,99,235,0.12));
-    border: 1px solid rgba(0,229,255,0.35);
-    border-radius: 26px;
-    padding: 34px;
-    margin-bottom: 28px;
-    box-shadow: 0 14px 45px rgba(0, 229, 255, 0.12);
-    animation: fadeUp 0.8s ease-in-out;
-}
-
-.hero-section p {
-    font-size: 1.05rem;
-    color: #CBD5E1;
-    max-width: 950px;
-    line-height: 1.7;
 }
